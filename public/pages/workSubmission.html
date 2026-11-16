@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Submissão de Trabalho - UNIEGO</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <div class="app-header" id="app-header"></div>
+
+  <div class="app-container">
+    <!-- Aviso dinâmico (público ou monitor) -->
+    <div id="public-notice" class="alert alert-info" style="display:none;margin-bottom:20px;">
+      ℹ️ Você está no modo de acesso livre. A submissão de trabalhos está disponível sem login.
+      Para ver a lista de trabalhos submetidos e atribuir avaliadores, faça login como Organização ou Direção.
+    </div>
+
+    <div class="card">
+      <h3>📄 Submissão de Trabalho Acadêmico</h3>
+      <div id="work-alert"></div>
+
+      <div class="form-group">
+        <label>Selecionar Evento *</label>
+        <select id="work-evento"><option value="">Carregando eventos...</option></select>
+      </div>
+
+      <div class="form-group">
+        <label>CPF do Autor Principal *</label>
+        <input type="text" id="work-cpf" placeholder="000.000.000-00" maxlength="14" oninput="App.mascararCPF(this)">
+      </div>
+
+      <div class="form-group">
+        <label>Título do Trabalho *</label>
+        <input type="text" id="work-titulo" placeholder="Digite o título completo do trabalho">
+      </div>
+
+      <div class="form-group">
+        <label>Modalidade de Apresentação *</label>
+        <select id="work-modalidade">
+          <option value="">Selecione...</option>
+          <option value="RESUMO_EXPANDIDO">Resumo Expandido</option>
+          <option value="ARTIGO_COMPLETO">Artigo Completo</option>
+          <option value="POSTER_BANNER">Pôster / Banner</option>
+          <option value="INICIACAO_CIENTIFICA">Iniciação Científica</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Link do Arquivo (Google Drive, Dropbox, PDF) *</label>
+        <input type="url" id="work-link" placeholder="https://drive.google.com/file/d/...">
+      </div>
+
+      <button class="btn btn-primary" onclick="submeterTrabalho()">Submeter Trabalho</button>
+    </div>
+
+    <!-- Lista de trabalhos — somente ORGANIZACAO, DIRECAO e ADMIN -->
+    <div id="works-list-section" class="card">
+      <h3>Trabalhos Submetidos</h3>
+      <div class="form-group">
+        <label>Filtrar por Evento</label>
+        <select id="work-filtro-evento" onchange="carregarTrabalhos()">
+          <option value="">Todos os eventos</option>
+        </select>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Título</th>
+            <th>Modalidade</th>
+            <th>Autor (CPF)</th>
+            <th>Status</th>
+            <th>Avaliadores</th>
+          </tr>
+        </thead>
+        <tbody id="lista-trabalhos"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Modal Atribuir Avaliador -->
+  <div id="modal-atribuir" class="modal-overlay" style="display:none;">
+    <div class="modal">
+      <h3>Atribuir Avaliador</h3>
+      <p id="atribuir-titulo" style="font-weight:600;margin-bottom:12px;"></p>
+      <input type="hidden" id="atribuir-trabalho-id">
+      <div class="form-group">
+        <label>Selecione o Avaliador Responsável *</label>
+        <select id="select-avaliador"><option value="">Carregando avaliadores...</option></select>
+      </div>
+      <div id="atribuir-alert"></div>
+      <div class="modal-actions">
+        <button class="btn btn-outline" onclick="fecharModalAtribuir()">Cancelar</button>
+        <button class="btn btn-primary" onclick="confirmarAtribuicao()">Atribuir</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/app.js"></script>
+  <script src="/js/workSubmission.js"></script>
+</body>
+</html>

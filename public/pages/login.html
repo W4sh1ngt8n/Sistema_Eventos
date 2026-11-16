@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UNIEGO Eventos - Acesso</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <div class="landing-container">
+    <div class="landing-header">
+      <h1>🎓 UNIEGO Eventos</h1>
+      <p>Sistema de Gestão de Eventos Acadêmicos</p>
+    </div>
+
+    <div class="access-grid">
+      <button class="access-card access-free" onclick="accessFree()">
+        <div class="icon">🌐</div>
+        <div class="title">Acesso Livre</div>
+        <div class="desc">Inscrição em eventos e submissão de trabalhos</div>
+      </button>
+
+      <button class="access-card access-monitor" onclick="accessRole('MONITOR', '/pages/monitor.html')">
+        <div class="icon">📋</div>
+        <div class="title">Monitor</div>
+        <div class="desc">Credenciamento e gestão de inscrições</div>
+      </button>
+
+      <button class="access-card access-evaluator" onclick="accessRole('AVALIADOR', '/pages/evaluation.html')">
+        <div class="icon">🔍</div>
+        <div class="title">Avaliador</div>
+        <div class="desc">Avaliação de trabalhos acadêmicos</div>
+      </button>
+
+      <button class="access-card access-organizer" onclick="accessRole('ORGANIZACAO', '/pages/admin.html')">
+        <div class="icon">🎯</div>
+        <div class="title">Organização</div>
+        <div class="desc">Gestão de eventos e credenciamento</div>
+      </button>
+
+      <button class="access-card access-direction" onclick="accessRole('DIRECAO', '/pages/admin.html')">
+        <div class="icon">👔</div>
+        <div class="title">Direção</div>
+        <div class="desc">Administração completa do sistema</div>
+      </button>
+    </div>
+
+    <!-- Login Modal -->
+    <div id="login-modal" class="login-modal" style="display:none;">
+      <div class="login-card-inner">
+        <h3 id="login-title">Login</h3>
+        <div id="alert-container"></div>
+        <div class="form-group">
+          <label for="email">E-mail</label>
+          <input type="email" id="email" placeholder="seu@email.com">
+        </div>
+        <div class="form-group">
+          <label for="senha">Senha</label>
+          <input type="password" id="senha" placeholder="••••••••">
+        </div>
+        <button class="btn btn-primary btn-block" onclick="fazerLogin()">Entrar</button>
+        <button class="btn btn-outline btn-block" style="margin-top:8px;" onclick="cancelarLogin()">Cancelar</button>
+        <div id="setup-link-container" style="text-align:center;margin-top:16px;display:none;">
+          <a href="#" onclick="mostrarSetup()" style="font-size:0.85rem;color:var(--primary-light);">Primeiro acesso? Configurar sistema</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Setup Modal -->
+    <div id="setup-modal" class="login-modal" style="display:none;">
+      <div class="login-card-inner">
+        <h3>Configuração Inicial</h3>
+        <p style="font-size:0.85rem;color:var(--text-light);margin-bottom:16px;">Crie a conta de administrador para começar.</p>
+        <div id="setup-alert-container"></div>
+        <div class="form-group">
+          <label for="setup-nome">Nome Completo</label>
+          <input type="text" id="setup-nome" placeholder="Nome do administrador">
+        </div>
+        <div class="form-group">
+          <label for="setup-email">E-mail</label>
+          <input type="email" id="setup-email" placeholder="admin@email.com">
+        </div>
+        <div class="form-group">
+          <label for="setup-senha">Senha (mín. 6 caracteres)</label>
+          <input type="password" id="setup-senha" placeholder="••••••••">
+        </div>
+        <button class="btn btn-primary btn-block" onclick="fazerSetup()">Criar Conta Admin</button>
+        <button class="btn btn-outline btn-block" style="margin-top:8px;" onclick="cancelarSetup()">Voltar</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/app.js"></script>
+  <script src="/js/login.js"></script>
+</body>
+</html>

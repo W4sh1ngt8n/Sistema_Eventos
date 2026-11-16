@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Portaria / Credenciamento - UNIEGO</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    /* Tela dividida da aba Câmera: leitor em cima, painel de dados embaixo */
+    .camera-split { display:flex; flex-direction:column; }
+    .camera-topo { display:flex; flex-direction:column; gap:8px; }
+    #qr-reader { width:100%; max-width:480px; margin:0 auto; border-radius:8px; overflow:hidden; background:#000; }
+    #qr-reader video { width:100% !important; height:auto !important; display:block; }
+    .camera-base { padding-top:12px; }
+    .painel-evento { display:flex; align-items:center; justify-content:space-between; gap:12px;
+      background:var(--primary); color:#fff; border-radius:8px; padding:10px 14px; margin-bottom:12px; }
+    .painel-evento .ev-nome { font-weight:700; font-size:0.95rem; line-height:1.2; }
+    .painel-evento .ev-contador { font-size:0.9rem; white-space:nowrap; opacity:0.95; }
+    .status-grande { text-align:center; padding:18px 12px; border-radius:8px; margin-bottom:8px; }
+    .status-grande .st-titulo { font-size:1.5rem; font-weight:800; letter-spacing:1px; }
+    .status-grande .st-detalhe { font-size:1.05rem; margin-top:4px; }
+    .status-ok { background:#e8f5e9; color:#1b5e20; border:2px solid #2e7d32; }
+    .status-dup { background:#fff8e1; color:#795548; border:2px solid #f9a825; }
+    .status-neg { background:#ffebee; color:#b71c1c; border:2px solid #c62828; }
+    .status-neutro { background:#f5f5f5; color:#555; border:2px solid #bbb; }
+    /* No celular: câmera fixa em cima, dados rolando embaixo */
+    @media (max-width: 768px) {
+      .camera-split { height:calc(100vh - 170px); }
+      #qr-reader { max-width:none; }
+      .camera-base { flex:1; overflow-y:auto; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-header" id="app-header"></div>
+
+  <div class="app-container">
+    <div class="card">
+      <h3>✅ Credenciamento e Presença</h3>
+
+      <div class="form-group" style="margin-bottom:20px;">
+        <label for="evento-select">Selecionar Evento para Credenciamento *</label>
+        <select id="evento-select">
+          <option value="">Carregando eventos...</option>
+        </select>
+      </div>
+
+      <div class="tabs">
+        <button class="tab active" onclick="switchTab('qr')">📷 QR Code (Leitor USB)</button>
+        <button class="tab" onclick="switchTab('camera')">📱 Câmera (Celular)</button>
+        <button class="tab" onclick="switchTab('cpf')">🆔 CPF Manual</button>
+        <button class="tab" onclick="switchTab('pagamentos')">💰 Validação de Pagamentos</button>
+        <button class="tab" onclick="switchTab('lista')">📋 Lista de Presentes</button>
+      </div>
+
+      <!-- Tab: QR Code (Leitor USB) -->
+      <div id="tab-qr" class="tab-content active">
+        <div id="qr-alert"></div>
+        <div class="qr-input-wrapper">
+          <p style="margin-bottom:12px;font-weight:600;">🔌 Conecte o leitor de QR Code USB</p>
+          <p style="font-size:0.85rem;color:var(--text-light);margin-bottom:16px;">
+            O leitor USB funciona como um teclado. Basta posicionar o leitor sobre o QR Code do crachá/inscrição.
+            A leitura é capturada automaticamente neste campo.
+          </p>
+          <input type="text" id="qr-input" placeholder="Aguardando leitura do QR Code..."
+                 autocomplete="off" autofocus
+                 style="font-size:1.1rem;text-align:center;padding:14px;letter-spacing:1px;">
+          <div class="hint">💡 O campo está focado. A leitura do scanner envia o código + Enter automaticamente.</div>
+        </div>
+        <div id="ultima-presenca" style="margin-top:20px;"></div>
+      </div>
+
+      <!-- Tab: Câmera do Celular (tela dividida) -->
+      <div id="tab-camera" class="tab-content">
+        <div id="camera-alert"></div>
+        <div class="camera-split">
+          <!-- Parte superior: câmera -->
+          <div class="camera-topo">
+            <div id="qr-reader"></div>
+            <button class="btn btn-outline" id="btn-alternar-camera" onclick="alternarCamera()" style="align-self:center;">
+              🔄 Usar câmera frontal
+            </button>
+          </div>
+          <!-- Parte inferior: painel de dados (espelho do OLED do leitor físico) -->
+          <div class="camera-base">
+            <div class="painel-evento">
+              <div class="ev-nome" id="camera-evento-nome">Selecione um evento</div>
+              <div class="ev-contador" id="camera-contador">Pres: --/--</div>
+            </div>
+            <div id="camera-resultado">
+              <div class="status-grande status-neutro">
+                <div class="st-titulo">PRONTO</div>
+                <div class="st-detalhe">Aponte a câmera para o QR Code do crachá</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab: CPF Manual -->
+      <div id="tab-cpf" class="tab-content">
+        <div id="cpf-alert"></div>
+        <div class="form-group">
+          <label for="cpf-input">CPF do Participante *</label>
+          <input type="text" id="cpf-input" placeholder="000.000.000-00" maxlength="14" oninput="App.mascararCPF(this)">
+        </div>
+        <button class="btn btn-primary" onclick="registrarPorCpf()">Registrar Presença</button>
+        <div id="cpf-resultado" style="margin-top:20px;"></div>
+      </div>
+
+      <!-- Tab: Validação de Pagamentos -->
+      <div id="tab-pagamentos" class="tab-content">
+        <h4 style="margin-bottom:12px;">💰 Validação de Pagamentos Pendentes</h4>
+        <div id="pagamentos-alert"></div>
+        <p style="color:var(--text-light);font-size:0.85rem;margin-bottom:12px;">
+          Inscritos em eventos pagos que ainda não tiveram o comprovante validado. Após validação, o credenciamento é liberado.
+        </p>
+        <table>
+          <thead>
+            <tr>
+              <th>Nome</th>
+              <th>CPF</th>
+              <th>Comprovante</th>
+              <th>Status</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody id="lista-pagamentos">
+            <tr><td colspan="5" style="text-align:center;color:var(--text-light);">Selecione um evento.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Tab: Lista de Presentes -->
+      <div id="tab-lista" class="tab-content">
+        <h4 style="margin-bottom:12px;">Participantes Credenciados</h4>
+        <table id="tabela-presencas">
+          <thead>
+            <tr>
+              <th>Nome</th>
+              <th>CPF</th>
+              <th>Método</th>
+              <th>Credenciado por</th>
+              <th>Data/Hora</th>
+            </tr>
+          </thead>
+          <tbody id="lista-presencas">
+            <tr><td colspan="5" style="text-align:center;color:var(--text-light);">Selecione um evento para ver a lista.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+  <script src="/js/app.js"></script>
+  <script src="/js/attendance.js"></script>
+</body>
+</html>

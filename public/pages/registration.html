@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Inscrição - UNIEGO Eventos</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <div class="app-header" style="background:var(--primary);">
+    <h2>📝 Inscrição em Evento</h2>
+    <div class="user-info">
+      <a href="/" style="color:white;font-size:0.85rem;">Página Inicial</a>
+    </div>
+  </div>
+
+  <div class="app-container">
+    <div class="card">
+      <h3>Formulário de Inscrição</h3>
+      <div id="reg-alert"></div>
+
+      <div class="form-group">
+        <label>Selecionar Evento *</label>
+        <select id="reg-evento"><option value="">Carregando eventos...</option></select>
+      </div>
+
+      <!-- Box de Pagamento Pix (dinâmico) -->
+      <div id="payment-box" style="display:none;margin-bottom:20px;">
+        <div class="alert alert-warning">
+          ⚠️ Este é um <strong>evento pago</strong>. Para concluir a inscrição, realize o pagamento via Pix e anexe o comprovante.
+        </div>
+        <div class="payment-box">
+          <h4>💰 Pagamento via Pix</h4>
+          <div style="margin-bottom:12px;">
+            <span style="font-size:0.85rem;color:var(--text-light);">Valor:</span>
+            <span class="valor" id="event-valor">R$ 0,00</span>
+          </div>
+          <div id="pix-qr-container" class="pix-qr-container">
+          </div>
+          <div style="margin-bottom:16px;">
+            <span style="font-size:0.85rem;color:var(--text-light);display:block;">Chave Pix:</span>
+            <code class="pix-key-display" id="pix-key-display"></code>
+          </div>
+          <button class="btn btn-sm btn-outline" onclick="copiarChavePix()">📋 Copiar Chave</button>
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+        <div class="form-group">
+          <label>CPF *</label>
+          <input type="text" id="reg-cpf" placeholder="000.000.000-00" maxlength="14" oninput="App.mascararCPF(this)">
+        </div>
+        <div class="form-group">
+          <label>Vínculo com a Instituição *</label>
+          <select id="reg-tipo">
+            <option value="">Selecione...</option>
+            <option value="ALUNO">Aluno</option>
+            <option value="PROFESSOR">Professor</option>
+            <option value="AVALIADOR">Avaliador</option>
+            <option value="EXTERNO">Comunidade Externa</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Nome Completo *</label>
+        <input type="text" id="reg-nome" placeholder="Nome completo">
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+        <div class="form-group">
+          <label>E-mail *</label>
+          <input type="email" id="reg-email" placeholder="seu@email.com">
+        </div>
+        <div class="form-group">
+          <label>Telefone / WhatsApp</label>
+          <input type="text" id="reg-telefone" placeholder="(00) 00000-0000" oninput="App.mascararTelefone(this)">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Instituição (se externo)</label>
+        <input type="text" id="reg-instituicao" placeholder="Nome da instituição">
+      </div>
+
+      <!-- Comprovante Pix (somente eventos pagos) -->
+      <div id="comprovante-group" class="form-group" style="display:none;">
+        <label>Comprovante de Pagamento Pix (Link ou ID da Transação) *</label>
+        <input type="text" id="reg-comprovante" placeholder="Cole o link do comprovante ou ID da transação Pix">
+        <div style="font-size:0.8rem;color:var(--text-light);margin-top:4px;">
+          💡 Cole o link do comprovante (ex: comprovante de transferência do banco) ou o ID da transação.
+          O comprovante será validado pela organização antes do credenciamento.
+        </div>
+      </div>
+
+      <button class="btn btn-primary" onclick="fazerInscricao()">Confirmar Inscrição</button>
+    </div>
+
+    <div class="card" id="qr-result" style="display:none;">
+      <h3>✅ Inscrição Confirmada!</h3>
+      <div id="payment-status-result" style="margin-bottom:16px;"></div>
+      <div style="text-align:center;padding:20px;">
+        <img id="qr-img" style="max-width:300px;border-radius:8px;" alt="QR Code">
+        <p style="margin-top:12px;font-size:0.9rem;color:var(--text-light);">
+          Salve este QR Code ou tire um print. Ele será usado no credenciamento no dia do evento.
+        </p>
+        <p style="margin-top:8px;font-size:0.8rem;color:var(--text-light);">
+          Token: <code id="qr-token"></code>
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/app.js"></script>
+  <script src="/js/registration.js"></script>
+</body>
+</html>

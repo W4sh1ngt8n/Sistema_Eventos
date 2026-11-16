@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Espaço do Monitor - UNIEGO</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <div class="app-header" id="app-header"></div>
+  <div class="app-container">
+    <div class="card">
+      <h3>Painel do Monitor</h3>
+      <p style="color:var(--text-light);margin-bottom:20px;">Selecione a ação desejada.</p>
+      <div class="portal-grid">
+        <a href="/pages/attendance.html" class="portal-btn">
+          <div class="icon">✅</div><div class="title">Credenciamento</div>
+          <div class="desc">Ler QR Code ou registrar por CPF</div>
+        </a>
+        <a href="/pages/registration.html" class="portal-btn">
+          <div class="icon">📝</div><div class="title">Nova Inscrição</div>
+          <div class="desc">Cadastrar participante no evento</div>
+        </a>
+        <a href="/pages/workSubmission.html" class="portal-btn">
+          <div class="icon">📄</div><div class="title">Submeter Trabalho</div>
+          <div class="desc">Enviar trabalho acadêmico</div>
+        </a>
+      </div>
+    </div>
+  </div>
+  <script src="/js/app.js"></script>
+  <script>
+    if (!App.requireAuth()) throw new Error('Unauthorized');
+    if (!App.requireRole('MONITOR', 'ADMIN')) throw new Error('Forbidden');
+    App.renderHeader('Espaço do Monitor');
+  </script>
+</body>
+</html>

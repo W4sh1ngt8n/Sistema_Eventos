@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Painel Administrativo - UNIEGO</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <div class="app-header" id="app-header"></div>
+
+  <div class="app-container">
+    <div class="kpi-grid" id="kpi-grid"></div>
+
+    <div class="card">
+      <div class="form-group">
+        <label for="evento-filtro">Selecionar Evento</label>
+        <select id="evento-filtro" onchange="carregarMetricas()">
+          <option value="">Selecione um evento</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="tabs">
+      <button class="tab active" onclick="switchTab('eventos')">📅 Gestão de Eventos</button>
+      <button class="tab" onclick="switchTab('certificados')">🎓 Certificados</button>
+      <button class="tab" onclick="switchTab('relatorios')">📊 Relatórios</button>
+    </div>
+
+    <!-- Tab: Eventos -->
+    <div id="tab-eventos" class="tab-content active">
+      <div class="card">
+        <h3 id="evento-form-title">Criar Novo Evento</h3>
+        <div id="evento-alert"></div>
+        <input type="hidden" id="ev-id">
+        <div class="form-group">
+          <label>Nome do Evento *</label>
+          <input type="text" id="ev-nome" placeholder="Nome do evento">
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:12px;">
+          <div class="form-group">
+            <label>Data *</label>
+            <input type="date" id="ev-data">
+          </div>
+          <div class="form-group">
+            <label>Hora Início *</label>
+            <input type="time" id="ev-inicio">
+          </div>
+          <div class="form-group">
+            <label>Hora Fim *</label>
+            <input type="time" id="ev-fim">
+          </div>
+          <div class="form-group">
+            <label>Vagas *</label>
+            <input type="number" id="ev-vagas" min="0" value="0">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Local</label>
+          <input type="text" id="ev-local" placeholder="Local do evento">
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+          <div class="form-group">
+            <label>Carga Horária (horas)</label>
+            <input type="number" id="ev-carga" min="0" value="0">
+          </div>
+          <div class="form-group">
+            <label>Status</label>
+            <select id="ev-ativo"><option value="1">Ativo</option><option value="0">Inativo</option></select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Descrição</label>
+          <textarea id="ev-descricao" rows="2" placeholder="Descrição do evento"></textarea>
+        </div>
+
+        <div style="border-top:2px solid var(--border);margin-top:16px;padding-top:16px;">
+          <h4 style="color:var(--primary);margin-bottom:12px;">💰 Configuração de Pagamento</h4>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+            <div class="form-group">
+              <label>Tipo de Evento *</label>
+              <select id="ev-is-paid" onchange="togglePaymentFields()">
+                <option value="0">Gratuito</option>
+                <option value="1">Pago (com Pix)</option>
+              </select>
+            </div>
+            <div class="form-group" id="ev-valor-group" style="display:none;">
+              <label>Valor (R$) *</label>
+              <input type="number" id="ev-valor" min="0" step="0.01" value="0" placeholder="0,00">
+            </div>
+          </div>
+          <div class="form-group" id="ev-pix-group" style="display:none;">
+            <label>Chave Pix *</label>
+            <input type="text" id="ev-pix-key" placeholder="email@exemplo.com / 000.000.000-00 / telefone">
+          </div>
+        </div>
+        <button class="btn btn-primary" onclick="salvarEvento()">Salvar Evento</button>
+        <button class="btn btn-outline" onclick="limparFormEvento()">Limpar</button>
+      </div>
+
+      <div class="card">
+        <h3>Eventos Cadastrados</h3>
+        <table id="tabela-eventos">
+          <thead>
+            <tr><th>Nome</th><th>Data</th><th>Vagas</th><th>Tipo</th><th>Status</th><th>Ações</th></tr>
+          </thead>
+          <tbody id="lista-eventos"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Tab: Certificados -->
+    <div id="tab-certificados" class="tab-content">
+      <div class="card">
+        <h3>Gerar Certificado Individual</h3>
+        <div id="cert-alert"></div>
+        <div class="form-group">
+          <label>Evento *</label>
+          <select id="cert-evento"></select>
+        </div>
+        <div class="form-group">
+          <label>CPF do Participante *</label>
+          <input type="text" id="cert-cpf" placeholder="000.000.000-00" maxlength="14" oninput="App.mascararCPF(this)">
+        </div>
+        <button class="btn btn-primary" onclick="gerarCertificado()">Gerar Certificado PDF</button>
+      </div>
+
+      <div class="card">
+        <h3>Gerar Certificados em Lote</h3>
+        <div id="cert-lote-alert"></div>
+        <div class="form-group">
+          <label>Evento *</label>
+          <select id="cert-lote-evento"></select>
+        </div>
+        <button class="btn btn-success" onclick="gerarCertificadosLote()">Gerar Todos os Certificados</button>
+      </div>
+    </div>
+
+    <!-- Tab: Relatórios -->
+    <div id="tab-relatorios" class="tab-content">
+      <div class="card">
+        <h3>Relatório de Evento (PDF)</h3>
+        <div class="form-group">
+          <label>Evento *</label>
+          <select id="rel-evento"></select>
+        </div>
+        <button class="btn btn-primary" onclick="gerarRelatorioEvento()">Gerar Relatório</button>
+      </div>
+
+      <div class="card">
+        <h3>Relatório Semestral</h3>
+        <div id="sem-alert"></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+          <div class="form-group">
+            <label>Ano *</label>
+            <input type="number" id="sem-ano" value="2026" min="2020" max="2030">
+          </div>
+          <div class="form-group">
+            <label>Semestre *</label>
+            <select id="sem-periodo"><option value="1">1º Semestre</option><option value="2">2º Semestre</option></select>
+          </div>
+        </div>
+        <button class="btn btn-primary" onclick="gerarRelatorioSemestral()">Gerar Relatório Semestral</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/app.js"></script>
+  <script src="/js/admin.js"></script>
+</body>
+</html>

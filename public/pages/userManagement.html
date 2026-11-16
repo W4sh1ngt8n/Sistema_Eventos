@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gestão de Usuários - UNIEGO</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <div class="app-header" id="app-header"></div>
+  <div class="app-container">
+    <div class="card">
+      <h3>Cadastrar Novo Usuário</h3>
+      <div id="user-alert"></div>
+
+      <div class="alert alert-info">
+        ℹ️ A senha será gerada automaticamente como <strong>123456</strong>.
+        O usuário deverá alterá-la no primeiro acesso.
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+        <div class="form-group">
+          <label>Nome Completo *</label>
+          <input type="text" id="user-nome" placeholder="Nome do operador">
+        </div>
+        <div class="form-group">
+          <label>E-mail *</label>
+          <input type="email" id="user-email" placeholder="email@exemplo.com">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Perfil de Acesso *</label>
+        <select id="user-perfil">
+          <option value="MONITOR">Monitor</option>
+          <option value="AVALIADOR">Avaliador</option>
+          <option value="ORGANIZACAO">Organização</option>
+          <option value="DIRECAO">Direção</option>
+          <option value="ADMIN">Administrador</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>CPF (Opcional)</label>
+        <input type="text" id="user-cpf" placeholder="000.000.000-00" maxlength="14" oninput="App.mascararCPF(this)">
+      </div>
+      <button class="btn btn-primary" onclick="criarUsuario()">Cadastrar Usuário</button>
+    </div>
+
+    <div class="card">
+      <h3>Usuários Cadastrados</h3>
+      <table>
+        <thead>
+          <tr><th>Nome</th><th>E-mail</th><th>Perfil</th><th>Status</th><th>Senha</th><th>Ações</th></tr>
+        </thead>
+        <tbody id="lista-usuarios"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Modal Editar -->
+  <div id="modal-editar" class="modal-overlay" style="display:none;">
+    <div class="modal">
+      <h3>Editar Usuário</h3>
+      <input type="hidden" id="edit-id">
+      <div class="form-group">
+        <label>Nome Completo *</label>
+        <input type="text" id="edit-nome">
+      </div>
+      <div class="form-group">
+        <label>E-mail *</label>
+        <input type="email" id="edit-email">
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+        <div class="form-group">
+          <label>Perfil</label>
+          <select id="edit-perfil">
+            <option value="MONITOR">Monitor</option>
+            <option value="AVALIADOR">Avaliador</option>
+            <option value="ORGANIZACAO">Organização</option>
+            <option value="DIRECAO">Direção</option>
+            <option value="ADMIN">Administrador</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Status</label>
+          <select id="edit-ativo"><option value="1">Ativo</option><option value="0">Inativo</option></select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>CPF</label>
+        <input type="text" id="edit-cpf" maxlength="14" oninput="App.mascararCPF(this)">
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-outline" onclick="fecharModalEditar()">Cancelar</button>
+        <button class="btn btn-primary" onclick="salvarEdicao()">Salvar</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/app.js"></script>
+  <script src="/js/userManagement.js"></script>
+</body>
+</html>
