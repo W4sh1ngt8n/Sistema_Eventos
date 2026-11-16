@@ -2,11 +2,11 @@ const API_URL = '/api';
 
 const App = {
   getToken() {
-    return localStorage.getItem('uniego_token');
+    return localStorage.getItem('sistema_token');
   },
 
   getUser() {
-    const userStr = localStorage.getItem('uniego_user');
+    const userStr = localStorage.getItem('sistema_user');
     return userStr ? JSON.parse(userStr) : null;
   },
 
@@ -15,13 +15,13 @@ const App = {
   },
 
   setAuth(token, user) {
-    localStorage.setItem('uniego_token', token);
-    localStorage.setItem('uniego_user', JSON.stringify(user));
+    localStorage.setItem('sistema_token', token);
+    localStorage.setItem('sistema_user', JSON.stringify(user));
   },
 
   logout() {
-    localStorage.removeItem('uniego_token');
-    localStorage.removeItem('uniego_user');
+    localStorage.removeItem('sistema_token');
+    localStorage.removeItem('sistema_user');
     window.location.href = '/';
   },
 

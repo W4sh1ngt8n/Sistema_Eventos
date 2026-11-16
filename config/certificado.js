@@ -10,7 +10,7 @@ module.exports = {
   // Logo institucional no topo do certificado.
   // Pode ser sobrescrito pela variável de ambiente LOGO_PATH.
   // Para desativar, troque por null.
-  logoPath: process.env.LOGO_PATH || path.join(__dirname, '../public/img/logo-uniego.png'),
+  logoPath: process.env.LOGO_PATH || path.join(__dirname, '../public/img/logo-sistema.png'),
 
   // Imagens de assinatura (opcional).
   // assinatura-comissao.png  → aparece na assinatura marcada como 'comissao'

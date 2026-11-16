@@ -5,7 +5,7 @@ const fs = require('fs');
 let db;
 
 function initDatabase() {
-  const dbPath = process.env.DB_PATH || './data/uniego.db';
+  const dbPath = process.env.DB_PATH || './data/sistema.db';
   const dir = path.dirname(dbPath);
   if (!fs.existsSync(dir)) {
     fs.mkdirSync(dir, { recursive: true });

@@ -1,7 +1,7 @@
 {
-  "name": "uniego-eventos",
+  "name": "sistema-eventos",
   "version": "1.0.0",
-  "description": "Sistema de Gestão de Eventos Acadêmicos - UNIEGO (MVC)",
+  "description": "Sistema de Gestão de Eventos Acadêmicos - Sistema (MVC)",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",

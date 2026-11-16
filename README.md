@@ -1,4 +1,4 @@
-Sistema de Gestão de Eventos Acadêmicos do Centro Universitário de Goianésia (UNIEGO). Plataforma completa para criação de eventos, inscrições com QR Code, credenciamento via leitor USB, submissão e avaliação de trabalhos, geração de certificados em PDF e relatórios. Suporta eventos gratuitos e pagos com pagamento via Pix.
+Sistema de Gestão de Eventos Acadêmicos do Centro Universitário de Goianésia (Sistema). Plataforma completa para criação de eventos, inscrições com QR Code, credenciamento via leitor USB, submissão e avaliação de trabalhos, geração de certificados em PDF e relatórios. Suporta eventos gratuitos e pagos com pagamento via Pix.
 
 ---
 
@@ -27,7 +27,7 @@ Sistema de Gestão de Eventos Acadêmicos do Centro Universitário de Goianésia
 
 ## Visão Geral
 
-O UNIEGO Eventos é um sistema web autônomo, construído em **Node.js + Express + SQLite**, que substituiu completamente a dependência anterior de Google Apps Script e Firebase. O sistema opera localmente sem necessidade de serviços externos pagos, mantendo total soberania sobre os dados institucionais.
+O Sistema de Eventos é um sistema web autônomo, construído em **Node.js + Express + SQLite**, que substituiu completamente a dependência anterior de Google Apps Script e Firebase. O sistema opera localmente sem necessidade de serviços externos pagos, mantendo total soberania sobre os dados institucionais.
 
 A autenticação é própria (sem Google/Firebase), utilizando **JWT** para sessões stateless e **bcrypt** para hash de senhas. O frontend é vanilla (HTML/CSS/JS puro, sem frameworks), garantindo compatibilidade universal e performance em hardware modesto.
 
@@ -134,7 +134,7 @@ SQLite (config/database.js)
 
 ## Estrutura de Diretórios
 ```
-uniego-eventos/
+sistema-eventos/
 ├── package.json
 ├── .env.example
 ├── .gitignore
@@ -194,7 +194,7 @@ uniego-eventos/
 │       ├── workSubmission.html
 │       └── changePassword.html
 └── data/                          # Gerado automaticamente
-    └── uniego.db                  # Banco SQLite (NÃO versionar)
+    └── sistema.db                  # Banco SQLite (NÃO versionar)
 ```
 
 ---
@@ -218,8 +218,8 @@ npm -v    # deve mostrar 9.x.x ou superior
 ### 1. Clonar ou criar o projeto
 ```bash
 # Se vier do Git
-git clone https://github.com/SEU-USUARIO/uniego-eventos.git
-cd uniego-eventos
+git clone https://github.com/SEU-USUARIO/sistema-eventos.git
+cd sistema-eventos
 
 # Ou criar do zero — criar a estrutura de pastas e arquivos manualmente
 ```
@@ -240,8 +240,8 @@ PORT=3000
 NODE_ENV=production
 JWT_SECRET=sua-chave-secreta-muito-longa-e-aleatoria-aqui
 JWT_EXPIRES_IN=8h
-DB_PATH=./data/uniego.db
-APP_NAME=UNIEGO Eventos
+DB_PATH=./data/sistema.db
+APP_NAME=Sistema de Eventos
 APP_URL=http://localhost:3000
 ```
 
@@ -270,8 +270,8 @@ Abrir no navegador: **http://localhost:3000**
 | `NODE_ENV` | ❌ | `production` | Ambiente de execução |
 | `JWT_SECRET` | ✅ | — | Chave criptográfica para assinar tokens JWT |
 | `JWT_EXPIRES_IN` | ❌ | `8h` | Tempo de validade do token |
-| `DB_PATH` | ❌ | `./data/uniego.db` | Caminho do arquivo SQLite |
-| `APP_NAME` | ❌ | `UNIEGO Eventos` | Nome da aplicação |
+| `DB_PATH` | ❌ | `./data/sistema.db` | Caminho do arquivo SQLite |
+| `APP_NAME` | ❌ | `Sistema de Eventos` | Nome da aplicação |
 | `APP_URL` | ❌ | `http://localhost:3000` | URL base |
 
 > ⚠️ **Nunca** versionar o arquivo `.env` no Git. Ele está no `.gitignore`.
@@ -444,7 +444,7 @@ Todas as rotas estão sob o prefixo `/api`.
 
 ## Banco de Dados
 
-O sistema utiliza **SQLite** (arquivo único em `data/uniego.db`). O banco é criado automaticamente na primeira execução, incluindo tabelas e migrações.
+O sistema utiliza **SQLite** (arquivo único em `data/sistema.db`). O banco é criado automaticamente na primeira execução, incluindo tabelas e migrações.
 
 ### Tabelas
 
@@ -520,14 +520,14 @@ PORT=3000
 NODE_ENV=production
 
 # JWT
-JWT_SECRET=uniego-super-secret-key-change-this-2026
+JWT_SECRET=sistema-super-secret-key-change-this-2026
 JWT_EXPIRES_IN=8h
 
 # Database
-DB_PATH=./data/uniego.db
+DB_PATH=./data/sistema.db
 
 # App
-APP_NAME=UNIEGO Eventos
+APP_NAME=Sistema de Eventos
 APP_URL=http://localhost:3000
 ```
 
@@ -542,10 +542,10 @@ APP_URL=http://localhost:3000
 O SQLite armazena todos os dados em um único arquivo. Para fazer backup:
 ```bash
 # Backup simples (copiar o arquivo)
-cp data/uniego.db data/backup/uniego_$(date +%Y%m%d_%H%M%S).db
+cp data/sistema.db data/backup/sistema_$(date +%Y%m%d_%H%M%S).db
 
 # Backup recomendado (usa .backup do SQLite para consistência)
-sqlite3 data/uniego.db ".backup data/backup/uniego_$(date +%Y%m%d).db"
+sqlite3 data/sistema.db ".backup data/backup/sistema_$(date +%Y%m%d).db"
 ```
 
 Recomenda-se um cron job diário:
@@ -554,14 +554,14 @@ Recomenda-se um cron job diário:
 crontab -e
 
 # Adiciona backup diário às 2h da manhã
-0 2 * * * sqlite3 /home/ton/uniego-eventos/data/uniego.db ".backup /home/ton/uniego-eventos/data/backup/uniego_$(date +\%Y\%m\%d).db"
+0 2 * * * sqlite3 /home/ton/sistema-eventos/data/sistema.db ".backup /home/ton/sistema-eventos/data/backup/sistema_$(date +\%Y\%m\%d).db"
 ```
 
 ### Restauração
 ```bash
 # Parar o servidor
 # Copiar o backup de volta
-cp data/backup/uniego_20260801.db data/uniego.db
+cp data/backup/sistema_20260801.db data/sistema.db
 
 # Reiniciar o servidor
 npm start
@@ -641,7 +641,7 @@ sudo apt-get install -y nodejs
 1. Se há outro admin/DIRECAO: eles podem resetar sua senha para 123456
 2. Se é o único admin: resetar o banco (perde todos os dados):
 ```bash
-   rm data/uniego.db
+   rm data/sistema.db
    npm start
    # Fazer o setup inicial novamente
 ```
@@ -679,7 +679,7 @@ Para adicionar uma nova funcionalidade:
 
 ## Licença
 
-Projeto institucional do Centro Universitário de Goianésia (UNIEGO). Uso interno.
+Projeto institucional do Centro Universitário de Goianésia (Sistema). Uso interno.
 
 ---
 
@@ -694,6 +694,6 @@ Para dúvidas técnicas ou problemas:
 
 ---
 
-**UNIEGO Eventos** — Sistema de Gestão de Eventos Acadêmicos
+**Sistema de Eventos** — Sistema de Gestão de Eventos Acadêmicos
 Arquitetura MVC | Node.js + Express + SQLite + JWT
 Agosto de 2026

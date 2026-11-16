@@ -76,5 +76,5 @@ process.on('uncaughtException', (err) => {
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log(`✅ Servidor UNIEGO rodando em http://localhost:${PORT}`);
+  console.log(`✅ Servidor Sistema rodando em http://localhost:${PORT}`);
 });
